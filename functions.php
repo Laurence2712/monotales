@@ -47,6 +47,25 @@ add_action('init', function () {
         'rewrite'             => ['slug' => 'series', 'with_front' => false],
     ]);
 
+    // Produit (boutique) — non public, visible en admin uniquement
+    register_post_type('produit', [
+        'labels' => [
+            'name'          => 'Boutique',
+            'singular_name' => 'Produit',
+            'add_new_item'  => 'Ajouter un produit',
+            'edit_item'     => 'Modifier le produit',
+            'all_items'     => 'Tous les produits',
+        ],
+        'public'             => false,
+        'publicly_queryable' => false,
+        'show_ui'            => true,
+        'show_in_menu'       => true,
+        'show_in_rest'       => false,
+        'supports'           => ['title', 'page-attributes'],
+        'menu_icon'          => 'dashicons-store',
+        'rewrite'            => false,
+    ]);
+
     // Photo / Tale
     register_post_type('tale', [
         'labels' => [
@@ -144,4 +163,36 @@ function mt_get_all_series(): WP_Query {
         'orderby'        => 'menu_order',
         'order'          => 'ASC',
     ]);
+}
+
+/* ── Boutique helpers (infrastructure — non publique) ── */
+
+/**
+ * Get produits from the shop. Pass false to include unavailable ones.
+ */
+function mt_get_produits(bool $disponibles_seulement = true): WP_Query {
+    $args = [
+        'post_type'      => 'produit',
+        'posts_per_page' => -1,
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
+    ];
+    if ($disponibles_seulement) {
+        $args['meta_query'] = [[
+            'key'     => 'produit_disponible',
+            'value'   => '1',
+            'compare' => '=',
+        ]];
+    }
+    return new WP_Query($args);
+}
+
+/**
+ * Return the tale image array linked to a produit, or false.
+ */
+function mt_produit_image(int $produit_id): array|false {
+    $tale_id = get_field('produit_tale', $produit_id);
+    if (!$tale_id) return false;
+    $img = get_field('tale_image', (int) $tale_id);
+    return is_array($img) ? $img : false;
 }

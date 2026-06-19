@@ -1,0 +1,129 @@
+[
+  {
+    "key": "group_produit_fields",
+    "title": "Boutique — Produit",
+    "fields": [
+      {
+        "key": "field_produit_tale",
+        "label": "Tale lié (photo source)",
+        "name": "produit_tale",
+        "type": "post_object",
+        "post_type": ["tale"],
+        "allow_null": 0,
+        "multiple": 0,
+        "return_format": "id",
+        "required": 1,
+        "instructions": "La photo vendue en tirage."
+      },
+      {
+        "key": "field_produit_titre_fr",
+        "label": "Titre produit (FR)",
+        "name": "produit_titre_fr",
+        "type": "text",
+        "instructions": "Laisser vide pour utiliser le titre du tale."
+      },
+      {
+        "key": "field_produit_titre_en",
+        "label": "Product title (EN)",
+        "name": "produit_titre_en",
+        "type": "text",
+        "instructions": "Leave empty to use the tale title."
+      },
+      {
+        "key": "field_produit_description_fr",
+        "label": "Description (FR)",
+        "name": "produit_description_fr",
+        "type": "textarea",
+        "rows": 3
+      },
+      {
+        "key": "field_produit_description_en",
+        "label": "Description (EN)",
+        "name": "produit_description_en",
+        "type": "textarea",
+        "rows": 3
+      },
+      {
+        "key": "field_produit_edition",
+        "label": "Type d'édition",
+        "name": "produit_edition",
+        "type": "select",
+        "choices": {
+          "open":    "Édition ouverte",
+          "limitee": "Édition limitée",
+          "unique":  "Œuvre unique"
+        },
+        "default_value": "open",
+        "return_format": "value"
+      },
+      {
+        "key": "field_produit_edition_nombre",
+        "label": "Nombre d'exemplaires (édition limitée / unique)",
+        "name": "produit_edition_nombre",
+        "type": "number",
+        "min": 1,
+        "instructions": "Ex : 30 pour une édition à 30 exemplaires."
+      },
+      {
+        "key": "field_produit_prix_depuis",
+        "label": "Prix à partir de (€)",
+        "name": "produit_prix_depuis",
+        "type": "number",
+        "min": 0,
+        "required": 1,
+        "instructions": "Prix affiché sur la vignette. Format : 95"
+      },
+      {
+        "key": "field_produit_formats_fr",
+        "label": "Formats & tarifs (FR)",
+        "name": "produit_formats_fr",
+        "type": "textarea",
+        "rows": 5,
+        "instructions": "Un format par ligne. Ex :\nA4 — 21×29.7 cm — 95 €\nA3 — 29.7×42 cm — 145 €\n50×70 cm — 210 €"
+      },
+      {
+        "key": "field_produit_formats_en",
+        "label": "Formats & pricing (EN)",
+        "name": "produit_formats_en",
+        "type": "textarea",
+        "rows": 5,
+        "instructions": "One format per line. Ex:\nA4 — 8.3×11.7 in — €95\nA3 — 11.7×16.5 in — €145\n50×70 cm — €210"
+      },
+      {
+        "key": "field_produit_papier_fr",
+        "label": "Papier / Support (FR)",
+        "name": "produit_papier_fr",
+        "type": "text",
+        "instructions": "Ex : Impression jet d'encre sur papier Hahnemühle 300 g/m²"
+      },
+      {
+        "key": "field_produit_papier_en",
+        "label": "Paper / Medium (EN)",
+        "name": "produit_papier_en",
+        "type": "text"
+      },
+      {
+        "key": "field_produit_disponible",
+        "label": "Disponible à la vente",
+        "name": "produit_disponible",
+        "type": "true_false",
+        "default_value": 0,
+        "instructions": "Cocher pour rendre ce produit actif dans la boutique."
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "produit"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "active": true
+  }
+]

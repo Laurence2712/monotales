@@ -49,6 +49,22 @@
       <?php echo $nav_label_manifesto; ?>
     </a>
 
+    <?php
+    // Boutique — infrastructure en place, lien désactivé.
+    // Pour activer : créer la page WP avec template "Boutique" et décommenter.
+    /*
+    $boutique_active = is_page_template('page-boutique.php');
+    $boutique_url    = get_page_link(get_page_by_path('boutique'));
+    ?>
+    <a href="<?php echo esc_url($boutique_url ?: home_url('/boutique/')); ?>"
+       class="mt-nav-item"
+       style="opacity:<?php echo $boutique_active ? 1 : 0.5; ?>">
+      <span class="mt-fr">Boutique</span>
+      <span class="mt-en">Shop</span>
+    </a>
+    <?php */
+    ?>
+
     <div class="mt-lang" role="group" aria-label="Langue">
       <button class="mt-lang-btn" id="btn-fr" aria-pressed="true" style="opacity:1">FR</button>
       <span class="mt-lang-sep">/</span>
