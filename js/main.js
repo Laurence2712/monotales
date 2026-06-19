@@ -51,11 +51,19 @@
       });
     }, { threshold: 0.04 });
 
-    // Stagger: slight delay per card to create waterfall effect
-    cards.forEach(function (el, i) {
-      setTimeout(function () {
+    // Cards already visible on load appear immediately with light stagger.
+    // Cards below the fold reveal on scroll via IntersectionObserver.
+    const vh = window.innerHeight;
+    let inViewIdx = 0;
+
+    cards.forEach(function (el) {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < vh) {
+        const i = inViewIdx++;
+        setTimeout(() => el.classList.add('is-visible'), i * 90);
+      } else {
         observer.observe(el);
-      }, Math.min(i * 60, 500));
+      }
     });
   });
 

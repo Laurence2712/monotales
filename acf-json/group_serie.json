@@ -69,6 +69,19 @@
         "type": "color_picker",
         "default_value": "#f4f3ef",
         "instructions": "Teinte claire (blanc cassé) qui imite l'image N&B avant chargement"
+      },
+      {
+        "key": "field_serie_card_size",
+        "label": "Taille de la vignette",
+        "name": "serie_card_size",
+        "type": "select",
+        "choices": {
+          "normal": "Normale (dans la grille)",
+          "large":  "Grande — pleine largeur (vedette)"
+        },
+        "default_value": "normal",
+        "return_format": "value",
+        "instructions": "Grande = la carte occupe toute la largeur de la galerie. Utiliser un format paysage (4:3, 16:10) pour un meilleur rendu."
       }
     ],
     "location": [

@@ -54,8 +54,11 @@
   .mt-lang-sep { @apply opacity-30; }
 
   /* Gallery grid (masonry columns) */
-  .mt-gallery { padding: 0 clamp(14px,3.5vw,40px) clamp(60px,9vh,100px); columns: 340px; column-gap: 6px; }
-  .mt-gallery--narrow { columns: 300px; }
+  .mt-gallery { padding: clamp(28px,4vh,48px) clamp(24px,5vw,72px) clamp(60px,9vh,100px); columns: 420px; column-gap: 8px; }
+  .mt-gallery--narrow { columns: 300px; padding-left: clamp(14px,3vw,40px); padding-right: clamp(14px,3vw,40px); }
+
+  /* Large card — spans all columns (série vedette) */
+  .mt-card-wrap--large { column-span: all; max-width: 100%; }
 
   /* Gallery card */
   .mt-card-wrap {
