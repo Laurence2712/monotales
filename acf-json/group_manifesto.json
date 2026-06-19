@@ -1,0 +1,52 @@
+[
+  {
+    "key": "group_manifesto_fields",
+    "title": "Manifeste — champs",
+    "fields": [
+      {
+        "key": "field_manifesto_lead_fr",
+        "label": "Phrase d'accroche (FR)",
+        "name": "manifesto_lead_fr",
+        "type": "text"
+      },
+      {
+        "key": "field_manifesto_lead_en",
+        "label": "Lead sentence (EN)",
+        "name": "manifesto_lead_en",
+        "type": "text"
+      },
+      {
+        "key": "field_manifesto_body_fr",
+        "label": "Corps du texte (FR)",
+        "name": "manifesto_body_fr",
+        "type": "wysiwyg",
+        "tabs": "text",
+        "toolbar": "basic",
+        "media_upload": 0
+      },
+      {
+        "key": "field_manifesto_body_en",
+        "label": "Body text (EN)",
+        "name": "manifesto_body_en",
+        "type": "wysiwyg",
+        "tabs": "text",
+        "toolbar": "basic",
+        "media_upload": 0
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "page_template",
+          "operator": "==",
+          "value": "page-manifesto.php"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "active": true
+  }
+]

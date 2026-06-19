@@ -1,0 +1,114 @@
+[
+  {
+    "key": "group_tale_fields",
+    "title": "Tale — champs",
+    "fields": [
+      {
+        "key": "field_tale_image",
+        "label": "Photographie",
+        "name": "tale_image",
+        "type": "image",
+        "return_format": "array",
+        "preview_size": "medium",
+        "instructions": "Photo N&B. Le thème applique automatiquement le filtre grayscale en CSS."
+      },
+      {
+        "key": "field_tale_serie",
+        "label": "Série parente",
+        "name": "tale_serie",
+        "type": "post_object",
+        "post_type": ["serie"],
+        "allow_null": 0,
+        "multiple": 0,
+        "return_format": "id",
+        "required": 1
+      },
+      {
+        "key": "field_tale_location",
+        "label": "Lieu",
+        "name": "tale_location",
+        "type": "text",
+        "instructions": "Ex : Alfama, Lisboa",
+        "required": 1
+      },
+      {
+        "key": "field_tale_date",
+        "label": "Date (affichage)",
+        "name": "tale_date",
+        "type": "text",
+        "instructions": "Format JJ.MM.AAAA — ex : 14.03.2026"
+      },
+      {
+        "key": "field_tale_title_fr",
+        "label": "Titre (FR)",
+        "name": "tale_title_fr",
+        "type": "text",
+        "required": 1
+      },
+      {
+        "key": "field_tale_title_en",
+        "label": "Title (EN)",
+        "name": "tale_title_en",
+        "type": "text",
+        "required": 1
+      },
+      {
+        "key": "field_tale_text_fr",
+        "label": "Texte (FR)",
+        "name": "tale_text_fr",
+        "type": "wysiwyg",
+        "tabs": "text",
+        "toolbar": "basic",
+        "media_upload": 0
+      },
+      {
+        "key": "field_tale_text_en",
+        "label": "Text (EN)",
+        "name": "tale_text_en",
+        "type": "wysiwyg",
+        "tabs": "text",
+        "toolbar": "basic",
+        "media_upload": 0
+      },
+      {
+        "key": "field_tale_aspect_ratio",
+        "label": "Format de l'image",
+        "name": "tale_aspect_ratio",
+        "type": "select",
+        "choices": {
+          "3/4":   "Portrait 3:4",
+          "4/3":   "Paysage 4:3",
+          "1/1":   "Carré 1:1",
+          "16/10": "Cinéma 16:10",
+          "16/9":  "Vidéo 16:9",
+          "3/2":   "Photo 3:2",
+          "4/5":   "Instagram 4:5",
+          "5/4":   "5:4"
+        },
+        "default_value": "3/4",
+        "return_format": "value"
+      },
+      {
+        "key": "field_tale_tone",
+        "label": "Couleur de fond placeholder",
+        "name": "tale_tone",
+        "type": "color_picker",
+        "default_value": "#f4f3ef"
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "tale"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "active": true
+  }
+]

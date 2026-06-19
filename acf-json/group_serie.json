@@ -1,0 +1,89 @@
+[
+  {
+    "key": "group_serie_fields",
+    "title": "Série — champs",
+    "fields": [
+      {
+        "key": "field_serie_title_fr",
+        "label": "Titre (FR)",
+        "name": "serie_title_fr",
+        "type": "text",
+        "required": 1
+      },
+      {
+        "key": "field_serie_title_en",
+        "label": "Title (EN)",
+        "name": "serie_title_en",
+        "type": "text",
+        "required": 1
+      },
+      {
+        "key": "field_serie_place_fr",
+        "label": "Lieu / Pays (FR)",
+        "name": "serie_place_fr",
+        "type": "text",
+        "required": 1,
+        "instructions": "Ex : Portugal, Japon, Islande"
+      },
+      {
+        "key": "field_serie_place_en",
+        "label": "Place / Country (EN)",
+        "name": "serie_place_en",
+        "type": "text",
+        "required": 1
+      },
+      {
+        "key": "field_serie_intro_fr",
+        "label": "Introduction (FR)",
+        "name": "serie_intro_fr",
+        "type": "textarea",
+        "rows": 3
+      },
+      {
+        "key": "field_serie_intro_en",
+        "label": "Introduction (EN)",
+        "name": "serie_intro_en",
+        "type": "textarea",
+        "rows": 3
+      },
+      {
+        "key": "field_serie_aspect_ratio",
+        "label": "Format de la vignette",
+        "name": "serie_aspect_ratio",
+        "type": "select",
+        "choices": {
+          "3/4":   "Portrait 3:4",
+          "4/3":   "Paysage 4:3",
+          "1/1":   "Carré 1:1",
+          "16/10": "Cinéma 16:10",
+          "3/2":   "Photo 3:2",
+          "4/5":   "Instagram 4:5"
+        },
+        "default_value": "3/4",
+        "return_format": "value"
+      },
+      {
+        "key": "field_serie_tone",
+        "label": "Couleur de fond placeholder",
+        "name": "serie_tone",
+        "type": "color_picker",
+        "default_value": "#f4f3ef",
+        "instructions": "Teinte claire (blanc cassé) qui imite l'image N&B avant chargement"
+      }
+    ],
+    "location": [
+      [
+        {
+          "param": "post_type",
+          "operator": "==",
+          "value": "serie"
+        }
+      ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "active": true
+  }
+]

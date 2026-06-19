@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MONOTALES</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #0a0a0a; }
+    ::selection { background: #ECEAE4; color: #0a0a0a; }
+    body { color: #ECEAE4; font-family: 'EB Garamond', Georgia, serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    /* HEADER */
+    .header {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+      padding: 18px clamp(20px,5vw,56px);
+      background: rgba(10,10,10,0.86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(236,234,228,0.12);
+    }
+    .header-logo {
+      cursor: pointer;
+      font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 19px;
+      letter-spacing: 0.46em; padding-left: 0.46em; color: #ECEAE4;
+    }
+    .header-nav { display: flex; align-items: center; gap: clamp(18px,3vw,40px); flex-wrap: wrap; }
+    .nav-item {
+      cursor: pointer;
+      font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px;
+      letter-spacing: 0.22em; text-transform: uppercase; color: #ECEAE4;
+      transition: opacity .35s ease;
+    }
+    .nav-item:hover { opacity: 1 !important; }
+    .lang-switcher {
+      display: flex; align-items: center; gap: 8px;
+      padding-left: clamp(6px,2vw,18px); margin-left: clamp(0px,1vw,8px);
+      border-left: 1px solid rgba(236,234,228,0.16);
+      font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; letter-spacing: 0.16em;
+    }
+    .lang-btn { cursor: pointer; color: #ECEAE4; transition: opacity .3s ease; }
+    .lang-sep { opacity: 0.3; }
+
+    /* GALLERY GRID */
+    .gallery-grid { padding: 0 clamp(14px,3.5vw,40px) clamp(60px,9vh,100px); columns: 340px; column-gap: 6px; }
+    .gallery-grid--narrow { columns: 300px; }
+    .gallery-card-wrap {
+      break-inside: avoid; margin-bottom: 6px; cursor: pointer;
+      opacity: 0; transform: translateY(34px); filter: blur(6px);
+      transition: opacity 1s cubic-bezier(.22,.61,.36,1), transform 1s cubic-bezier(.22,.61,.36,1), filter 1s cubic-bezier(.22,.61,.36,1);
+    }
+    .gallery-card-wrap.revealed { opacity: 1; transform: translateY(0); filter: blur(0); }
+    .gallery-card {
+      position: relative; overflow: hidden; min-height: 200px;
+      background-image: repeating-linear-gradient(135deg, rgba(10,10,10,0.04) 0px, rgba(10,10,10,0.04) 1px, transparent 1px, transparent 9px);
+      transition: filter 1.1s ease, transform 1.1s ease;
+    }
+    .gallery-card:hover { filter: brightness(0.96); transform: scale(1.012); }
+    .gallery-card--photo:hover { transform: scale(1.014); }
+    .card-inset { position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(10,10,10,0.06); }
+    .card-ph-label {
+      position: absolute; top: 16px; left: 18px;
+      font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px;
+      letter-spacing: 0.28em; text-transform: uppercase; color: rgba(10,10,10,0.32);
+      transition: opacity .9s ease;
+    }
+    .card-ph-center {
+      position: absolute; inset: 0;
+      box-shadow: inset 0 0 0 1px rgba(10,10,10,0.06);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-ph-center span {
+      font-family: 'Helvetica Neue', Arial, monospace; font-size: 9px;
+      letter-spacing: 0.3em; color: rgba(10,10,10,0.28); text-transform: uppercase;
+      transition: opacity .9s ease;
+    }
+    .card-caption {
+      position: absolute; left: 0; right: 0; bottom: 0; padding: 60px 22px 22px;
+      background: linear-gradient(to top, rgba(10,10,10,0.78), rgba(10,10,10,0));
+      opacity: 0; transform: translateY(12px);
+      transition: opacity .8s ease, transform .8s ease; pointer-events: none;
+    }
+    .card-caption--photo { padding: 46px 18px 16px; background: linear-gradient(to top, rgba(10,10,10,0.72), rgba(10,10,10,0)); }
+    .gallery-card:hover .card-ph-label,
+    .gallery-card:hover .card-ph-center span { opacity: 0; }
+    .gallery-card:hover .card-caption { opacity: 1; transform: translateY(0); }
+    .caption-place { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(236,234,228,0.66); }
+    .caption-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400; font-size: clamp(24px,2.6vw,30px); line-height: 1.08; color: #ECEAE4; margin-top: 5px; }
+    .caption-count { display: flex; align-items: center; gap: 10px; margin-top: 11px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(236,234,228,0.78); }
+    .caption-count-line { width: 16px; height: 1px; background: rgba(236,234,228,0.5); flex-shrink: 0; }
+    .caption-photo-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400; font-size: 21px; line-height: 1.1; color: #ECEAE4; }
+    .caption-photo-meta { display: flex; align-items: center; gap: 10px; margin-top: 7px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(236,234,228,0.72); }
+    .caption-meta-line { width: 14px; height: 1px; background: rgba(236,234,228,0.4); flex-shrink: 0; }
+
+    /* HOME */
+    .home-hero { padding: clamp(54px,12vh,132px) clamp(20px,5vw,56px) clamp(40px,7vh,84px); text-align: center; max-width: 1080px; margin: 0 auto; }
+    .hero-kicker { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: #7d7970; margin-bottom: 30px; }
+    .hero-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(40px,8.4vw,120px); line-height: 0.96; letter-spacing: 0.01em; color: #ECEAE4; margin: 0; }
+    .hero-sub { font-family: 'EB Garamond', serif; font-style: italic; font-size: clamp(15px,2.1vw,22px); color: #9c988f; margin: 30px auto 0; max-width: 560px; line-height: 1.55; }
+
+    /* CATEGORY */
+    .cat-header { padding: clamp(40px,7vh,86px) clamp(20px,5vw,56px) clamp(30px,5vh,56px); max-width: 1080px; margin: 0 auto; text-align: center; }
+    .breadcrumb { display: flex; align-items: center; justify-content: center; gap: 10px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #7d7970; margin-bottom: 30px; }
+    .breadcrumb-link { cursor: pointer; transition: color .3s ease; }
+    .breadcrumb-link:hover { color: #ECEAE4; }
+    .breadcrumb-sep { opacity: 0.5; }
+    .breadcrumb-cur { color: #b8b4ab; }
+    .cat-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(36px,6.6vw,82px); line-height: 1; letter-spacing: 0.005em; color: #ECEAE4; margin: 0; }
+    .cat-intro { font-family: 'EB Garamond', serif; font-size: clamp(15px,1.8vw,20px); color: #9c988f; margin: 24px auto 0; max-width: 520px; line-height: 1.6; }
+    .cat-count { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: #6c685f; margin-top: 22px; }
+
+    /* TALE */
+    .tale-section { padding: clamp(26px,5vh,60px) clamp(20px,5vw,56px) clamp(60px,9vh,110px); max-width: 1300px; margin: 0 auto; }
+    .tale-breadcrumb { display: flex; align-items: center; gap: 10px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: #7d7970; }
+    .tale-layout { display: flex; flex-wrap: wrap; gap: clamp(28px,4.5vw,72px); margin-top: clamp(22px,3vh,38px); align-items: flex-start; }
+    .tale-image-col { flex: 1 1 460px; min-width: 280px; }
+    .tale-image { position: relative; overflow: hidden; min-height: 280px; background-image: repeating-linear-gradient(135deg, rgba(10,10,10,0.04) 0px, rgba(10,10,10,0.04) 1px, transparent 1px, transparent 9px); }
+    .tale-image-inset { position: absolute; inset: 0; box-shadow: inset 0 0 0 1px rgba(10,10,10,0.06); display: flex; align-items: center; justify-content: center; }
+    .tale-image-label { font-family: 'Helvetica Neue', Arial, monospace; font-size: 10px; letter-spacing: 0.32em; color: rgba(10,10,10,0.3); text-transform: uppercase; }
+    .tale-text-col { flex: 1 1 380px; min-width: 280px; padding-top: 4px; }
+    .tale-meta-top { display: flex; align-items: center; gap: 14px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #7d7970; }
+    .tale-meta-line { flex: 1; height: 1px; background: rgba(236,234,228,0.16); }
+    .tale-loc { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase; color: #b8b4ab; margin-top: 22px; }
+    .tale-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-style: italic; font-size: clamp(34px,4.6vw,58px); line-height: 1.02; color: #ECEAE4; margin: 10px 0 0; }
+    .tale-text { font-family: 'EB Garamond', serif; font-size: clamp(17px,1.5vw,21px); line-height: 1.72; color: #d6d2c9; margin: 30px 0 0; }
+    .tale-alt { margin-top: 34px; padding-top: 26px; border-top: 1px solid rgba(236,234,228,0.13); }
+    .tale-alt-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: #6c685f; margin-bottom: 12px; }
+    .tale-alt-text { font-family: 'EB Garamond', serif; font-style: italic; font-size: clamp(15px,1.3vw,18px); line-height: 1.7; color: #8f8b82; margin: 0; }
+    .tale-nav { display: flex; justify-content: space-between; gap: 16px; margin-top: 42px; }
+    .tale-nav-btn { cursor: pointer; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: #8a8780; transition: color .3s ease; }
+    .tale-nav-btn:hover { color: #ECEAE4; }
+
+    /* MANIFESTO */
+    .manifesto-section { padding: clamp(60px,13vh,150px) clamp(24px,6vw,56px) clamp(70px,11vh,140px); max-width: 680px; margin: 0 auto; }
+    .manifesto-kicker { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: #7d7970; text-align: center; margin-bottom: 42px; }
+    .manifesto-lead { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(28px,4.4vw,46px); line-height: 1.18; color: #ECEAE4; margin: 0 0 40px; }
+    .manifesto-para { font-family: 'EB Garamond', serif; font-size: clamp(16px,1.5vw,20px); line-height: 1.78; color: #bdb9b0; margin: 0 0 26px; }
+    .manifesto-rule { width: 40px; height: 1px; background: rgba(236,234,228,0.4); margin: 48px auto 0; }
+
+    /* JOURNAL */
+    .journal-section { padding: clamp(54px,10vh,110px) clamp(20px,5vw,56px) clamp(70px,10vh,120px); max-width: 980px; margin: 0 auto; }
+    .journal-header { text-align: center; margin-bottom: clamp(40px,6vh,72px); }
+    .journal-title { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(40px,7vw,86px); line-height: 1; color: #ECEAE4; margin: 0; }
+    .journal-sub { font-family: 'EB Garamond', serif; font-style: italic; font-size: clamp(15px,1.6vw,19px); color: #9c988f; margin: 18px 0 0; }
+    .journal-note { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase; color: #6c685f; margin-top: 20px; }
+    .journal-list { border-top: 1px solid rgba(236,234,228,0.12); }
+    .journal-row {
+      display: flex; align-items: baseline; gap: clamp(16px,3vw,40px); flex-wrap: wrap;
+      padding: clamp(20px,3vh,30px) 6px; border-bottom: 1px solid rgba(236,234,228,0.12);
+      cursor: pointer; transition: background .35s ease, padding-left .35s ease;
+    }
+    .journal-row:hover { background: rgba(236,234,228,0.03); padding-left: 16px; }
+    .journal-row-meta { flex: 0 0 auto; display: flex; gap: 14px; align-items: baseline; min-width: 140px; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #7d7970; }
+    .journal-row-body { flex: 1 1 320px; min-width: 220px; }
+    .journal-row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .journal-row-title { font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400; font-size: clamp(22px,2.6vw,30px); color: #ECEAE4; line-height: 1.1; }
+    .journal-row-loc { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #6c685f; white-space: nowrap; }
+    .journal-row-cat { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #6c685f; margin-top: 7px; }
+    .journal-row-excerpt { font-family: 'EB Garamond', serif; font-size: 15px; line-height: 1.6; color: #928e85; margin: 7px 0 0; max-width: 560px; }
+
+    /* FOOTER */
+    .footer { border-top: 1px solid rgba(236,234,228,0.12); padding: clamp(40px,7vh,72px) clamp(20px,5vw,56px) clamp(34px,5vh,52px); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: flex-end; gap: 30px; flex-wrap: wrap; max-width: 1300px; margin: 0 auto; }
+    .footer-logo { cursor: pointer; font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: 22px; letter-spacing: 0.4em; padding-left: 0.4em; color: #ECEAE4; }
+    .footer-tagline { font-family: 'EB Garamond', serif; font-style: italic; font-size: 15px; color: #8a8780; margin-top: 10px; }
+    .footer-links { display: flex; gap: clamp(16px,2.4vw,30px); flex-wrap: wrap; font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; }
+    .footer-link { color: #9c988f; text-decoration: none; transition: color .3s ease; }
+    .footer-link:hover { color: #ECEAE4; }
+    .footer-rights { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #5e5b53; margin-top: clamp(30px,5vh,46px); max-width: 1300px; margin-left: auto; margin-right: auto; }
+
+    /* ANIMATIONS */
+    @keyframes mtFade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    .screen-enter { animation: mtFade .6s ease both; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: 0.01ms !important; } }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-logo" id="header-logo">MONOTALES</div>
+  <nav class="header-nav" id="header-nav"></nav>
+</header>
+
+<main id="main"></main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo" id="footer-logo">MONOTALES</div>
+      <div class="footer-tagline" id="footer-tagline"></div>
+    </div>
+    <div class="footer-links">
+      <a href="#" class="footer-link">Instagram</a>
+      <a href="#" class="footer-link">Facebook</a>
+      <a href="#" class="footer-link">Pinterest</a>
+    </div>
+  </div>
+  <div class="footer-rights" id="footer-rights"></div>
+</footer>
+
+<script>
+const CATS = [
+  { id:'lisboa', tone:'#f4f3ef', ar:'3/4',
+    title:{ fr:"Lisbonne, l'heure bleue", en:'Lisbon, the blue hour' },
+    place:{ fr:'Portugal', en:'Portugal' },
+    intro:{ fr:"Quatre instants d'une ville qui descend lentement vers le fleuve.", en:'Four moments of a city sloping slowly down to the river.' },
+    photos:[
+      { loc:'Alfama, Lisboa', date:'14.03.2026', ar:'3/4', tone:'#f4f3ef',
+        title:{ fr:'Le premier tramway', en:'The first tram' },
+        text:{ fr:`À l'heure où la ville hésite entre la nuit et le jour, le tramway gravit l'Alfama dans un grincement de fer. Personne ne parle. La lumière fait le reste.`, en:`In the hour when the city wavers between night and day, the tram climbs the Alfama in a grinding of iron. No one speaks. The light does the rest.` } },
+      { loc:'Graça, Lisboa', date:'13.03.2026', ar:'1/1', tone:'#e9e7e0',
+        title:{ fr:'Les azulejos', en:'The azulejos' },
+        text:{ fr:`Les murs racontent en faïence ce que les gens taisent. Bleu sur blanc, depuis trois cents ans.`, en:`The walls tell in glazed tile what people leave unsaid. Blue on white, for three hundred years.` } },
+      { loc:'Cais do Sodré, Lisboa', date:'12.03.2026', ar:'16/10', tone:'#f7f6f3',
+        title:{ fr:'Le grand fleuve', en:'The great river' },
+        text:{ fr:`Le Tage est si large qu'on l'a longtemps pris pour la mer. Au matin, il a la couleur exacte de la paille.`, en:`The Tagus is so wide it was long mistaken for the sea. At dawn it takes the exact colour of straw.` } },
+      { loc:'Bica, Lisboa', date:'11.03.2026', ar:'4/5', tone:'#eeece4',
+        title:{ fr:"L'escalier de la Bica", en:'The Bica staircase' },
+        text:{ fr:`Chaque marche descend vers une lumière qu'on ne voit pas encore. C'est la ville qui retient son souffle.`, en:`Each step descends toward a light not yet seen. It is the city holding its breath.` } }
+    ]
+  },
+  { id:'tokyo', tone:'#ECEAE4', ar:'4/3',
+    title:{ fr:'Tōkyō, le dernier train', en:'Tokyo, the last train' },
+    place:{ fr:'Japon', en:'Japan' },
+    intro:{ fr:"La mégapole comme on ne la montre jamais : vide, silencieuse, suspendue.", en:'The megacity as it is never shown: empty, silent, suspended.' },
+    photos:[
+      { loc:'Shinjuku, Tōkyō', date:'02.02.2026', ar:'4/3', tone:'#ECEAE4',
+        title:{ fr:'Le dernier train', en:'The last train' },
+        text:{ fr:`Sous la pluie de néons éteints, un homme attend un train qui ne viendra plus. Le silence d'une mégapole est la chose la plus rare au monde.`, en:`Beneath the rain of unlit neon, a man waits for a train that will never come. The silence of a megacity is the rarest thing in the world.` } },
+      { loc:'Shibuya, Tōkyō', date:'01.02.2026', ar:'3/4', tone:'#f3f2ee',
+        title:{ fr:'Pluie de néons', en:'Neon rain' },
+        text:{ fr:`Les enseignes éteintes pleuvent encore dans les flaques. La ville rêve en couleurs qu'on ne verra pas.`, en:`The unlit signs still rain in the puddles. The city dreams in colours we will not see.` } },
+      { loc:'Shibuya, Tōkyō', date:'31.01.2026', ar:'16/9', tone:'#f6f4ee',
+        title:{ fr:'Le passage', en:'The crossing' },
+        text:{ fr:`Mille inconnus se croisent sans jamais se toucher. Puis le feu passe au rouge, et plus personne.`, en:`A thousand strangers cross without ever touching. Then the light turns red, and no one at all.` } },
+      { loc:'Yanaka, Tōkyō', date:'30.01.2026', ar:'1/1', tone:'#e7e5de',
+        title:{ fr:'Le sanctuaire', en:'The shrine' },
+        text:{ fr:`Au bout d'une ruelle, le silence a gardé sa place. On retire ses chaussures et le siècle s'arrête.`, en:`At the end of an alley, silence has kept its place. You take off your shoes and the century stops.` } }
+    ]
+  },
+  { id:'islande', tone:'#f7f6f3', ar:'16/10',
+    title:{ fr:'Plein nord', en:'Due north' },
+    place:{ fr:'Islande', en:'Iceland' },
+    intro:{ fr:"Une terre d'avant les hommes, où le noir et le blanc n'ont rien à inventer.", en:'A land from before mankind, where black and white have nothing to invent.' },
+    photos:[
+      { loc:'Reykjavík, Islande', date:'21.01.2026', ar:'16/10', tone:'#f7f6f3',
+        title:{ fr:'Plein nord', en:'Due north' },
+        text:{ fr:`Le vent vient du nord et n'a rencontré personne depuis mille kilomètres. Ici, le noir et le blanc suffisent à tout dire.`, en:`The wind comes from the north and has met no one for a thousand kilometres. Here, black and white are enough to say everything.` } },
+      { loc:'Reykjanes, Islande', date:'20.01.2026', ar:'4/5', tone:'#eeece4',
+        title:{ fr:'La coulée', en:'The flow' },
+        text:{ fr:`La lave a figé sa course, le froid a fait le reste. Un paysage tel qu'il était avant nous.`, en:`The lava froze mid-course, the cold did the rest. A landscape as it was before us.` } },
+      { loc:'Vík, Islande', date:'19.01.2026', ar:'3/2', tone:'#f4f3ef',
+        title:{ fr:'Mer de Norvège', en:'Norwegian sea' },
+        text:{ fr:`Le sable est noir, l'écume est blanche, rien d'autre. Le noir et blanc n'a rien à ajouter ici.`, en:`The sand is black, the foam is white, nothing else. Black and white has nothing to add here.` } },
+      { loc:'Höfn, Islande', date:'18.01.2026', ar:'1/1', tone:'#e9e7e0',
+        title:{ fr:'La cabane', en:'The cabin' },
+        text:{ fr:`Une lumière, très loin, prouve qu'on n'est pas seul. C'est parfois tout ce qu'on demande.`, en:`A light, far off, proves we are not alone. Sometimes that is all we ask.` } }
+    ]
+  },
+  { id:'maroc', tone:'#e7e5de', ar:'1/1',
+    title:{ fr:'La fumée', en:'The smoke' },
+    place:{ fr:'Maroc', en:'Morocco' },
+    intro:{ fr:"Du détroit aux médinas, des lieux où l'image se gagne au ralenti.", en:'From the strait to the medinas, places where the image is earned slowly.' },
+    photos:[
+      { loc:'Marrakech, Maroc', date:'30.12.2025', ar:'1/1', tone:'#e7e5de',
+        title:{ fr:'La fumée', en:'The smoke' },
+        text:{ fr:`La fumée monte droit dans l'air sec. Derrière elle, des visages que je ne reverrai jamais, et que je n'oublierai pas.`, en:`Smoke rises straight in the dry air. Behind it, faces I will never see again, and will never forget.` } },
+      { loc:'Tanger, Maroc', date:'18.09.2025', ar:'5/4', tone:'#eceae3',
+        title:{ fr:'Le détroit', en:'The strait' },
+        text:{ fr:`Le détroit est si étroit qu'on croit pouvoir toucher l'Europe. Pourtant, tout un monde tient dans ces quelques milles d'eau.`, en:`The strait is so narrow you think you could touch Europe. Yet a whole world fits in these few miles of water.` } },
+      { loc:'Fès, Maroc', date:'17.09.2025', ar:'3/4', tone:'#f3f2ee',
+        title:{ fr:'La médina', en:'The medina' },
+        text:{ fr:`On se perd à dessein ; c'est la seule façon de trouver. Chaque mur renvoie le même appel.`, en:`You lose yourself on purpose; it is the only way to find. Every wall returns the same call.` } },
+      { loc:'Fès, Maroc', date:'16.09.2025', ar:'4/5', tone:'#f4f2ec',
+        title:{ fr:'La tannerie', en:'The tannery' },
+        text:{ fr:`Des couleurs que le noir et blanc rend à leur silence. L'odeur, elle, ne se photographie pas.`, en:`Colours that black and white returns to their silence. The smell, though, cannot be photographed.` } }
+    ]
+  },
+  { id:'mediterranee', tone:'#eeece4', ar:'3/2',
+    title:{ fr:'Avant le jour', en:'Before daylight' },
+    place:{ fr:'Méditerranée', en:'Mediterranean' },
+    intro:{ fr:"Sète, Trieste : deux ports, une même heure suspendue avant l'aube.", en:'Sète, Trieste: two harbours, the same suspended hour before dawn.' },
+    photos:[
+      { loc:'Sète, France', date:'28.11.2025', ar:'3/2', tone:'#eeece4',
+        title:{ fr:'Avant le jour', en:'Before daylight' },
+        text:{ fr:`Les pêcheurs partent avant le jour. On ne voit que leurs mains, et la mer qui tient tout le reste.`, en:`The fishermen leave before daylight. You see only their hands, and the sea that holds all the rest.` } },
+      { loc:'Trieste, Italia', date:'11.12.2025', ar:'4/5', tone:'#f2f1ec',
+        title:{ fr:"L'heure vide", en:'The empty hour' },
+        text:{ fr:`Le café est vide à cette heure. Dehors, l'Adriatique a la couleur exacte de l'attente.`, en:`The café is empty at this hour. Outside, the Adriatic is the exact colour of waiting.` } },
+      { loc:'Sète, France', date:'27.11.2025', ar:'1/1', tone:'#f6f4ee',
+        title:{ fr:'Les filets', en:'The nets' },
+        text:{ fr:`Le matin sèche ce que la nuit a pris. Les mains réparent ce que la mer défait.`, en:`Morning dries what the night has taken. Hands mend what the sea undoes.` } },
+      { loc:'Trieste, Italia', date:'10.12.2025', ar:'16/9', tone:'#f7f6f3',
+        title:{ fr:'Le môle', en:'The pier' },
+        text:{ fr:`Le môle avance dans la mer comme une phrase inachevée. Au bout, un homme regarde l'autre rive.`, en:`The pier reaches into the sea like an unfinished sentence. At its end, a man watches the far shore.` } }
+    ]
+  },
+  { id:'varanasi', tone:'#f6f4ee', ar:'4/5',
+    title:{ fr:'Le fleuve', en:'The river' },
+    place:{ fr:'Inde', en:'India' },
+    intro:{ fr:"Sur les ghats de Varanasi, le fleuve emporte les cendres et les prières avec la même patience.", en:'On the ghats of Varanasi, the river carries ashes and prayers with the same patience.' },
+    photos:[
+      { loc:'Varanasi, Inde', date:'03.10.2025', ar:'1/1', tone:'#f6f4ee',
+        title:{ fr:'Le fleuve', en:'The river' },
+        text:{ fr:`Sur les ghats, le fleuve emporte les cendres et les prières avec la même patience. Le matin sent la fumée et le jasmin.`, en:`On the ghats, the river carries ashes and prayers with the same patience. The morning smells of smoke and jasmine.` } },
+      { loc:'Varanasi, Inde', date:'02.10.2025', ar:'3/4', tone:'#e9e7e0',
+        title:{ fr:'Les marches', en:'The steps' },
+        text:{ fr:`Les marches descendent vers l'eau et vers autre chose. On y vient laver plus que le corps.`, en:`The steps descend toward the water and toward something else. People come to wash more than the body.` } },
+      { loc:'Varanasi, Inde', date:'01.10.2025', ar:'16/10', tone:'#f4f3ef',
+        title:{ fr:'La barque', en:'The boat' },
+        text:{ fr:`À l'aube, une rame suffit à fendre tout le silence. La brume rend le fleuve sans rive.`, en:`At dawn, one oar is enough to split all the silence. The mist leaves the river without a bank.` } },
+      { loc:'Varanasi, Inde', date:'30.09.2025', ar:'4/5', tone:'#eeece4',
+        title:{ fr:"L'offrande", en:'The offering' },
+        text:{ fr:`Une flamme posée sur l'eau, et déjà emportée. On confie au courant ce qu'on ne peut garder.`, en:`A flame set on the water, already carried away. We give the current what we cannot keep.` } }
+    ]
+  }
+];
+
+const DICT = {
+  fr: {
+    kicker:'Photographies & récits', hero1:'Monotales',
+    heroSub:'Des séries photographiques en noir et blanc. Choisissez un lieu, entrez dans son silence.',
+    nav_gallery:'Galerie', nav_journal:'Journal', nav_manifesto:'Manifeste',
+    prev:'Précédent', next:'Suivant', all_series:'Toute la série',
+    journal_title:'Journal', journal_sub:'Toutes les parutions, de la plus récente à la première.', journal_note:'Trois parutions par semaine',
+    manifesto_title:'Manifeste',
+    manifesto:[
+      `MONOTALES est né d'un refus : celui de la vitesse.`,
+      `Une photographie. Un lieu. Quelques mots. Rien de plus. Dans un monde saturé d'images à peine vues, nous croyons encore à l'image unique — celle que l'on regarde, que l'on laisse infuser, que l'on n'oublie pas.`,
+      `Le noir et le blanc n'est pas une nostalgie. C'est une façon de retirer le superflu pour ne garder que la lumière, la forme, le silence.`,
+      `Chaque série est une halte. Trois fois par semaine, puis chaque jour : un rendez-vous lent, à contre-courant.`,
+      `Ici, on ne fait pas défiler. On s'arrête.`
+    ],
+    footer_tag:'Une photo. Un lieu. Un texte.',
+    footer_rights:'© 2026 MONOTALES — Photographies en noir et blanc. Français & English.'
+  },
+  en: {
+    kicker:'Photographs & stories', hero1:'Monotales',
+    heroSub:'Photographic series in black and white. Choose a place, step into its silence.',
+    nav_gallery:'Gallery', nav_journal:'Journal', nav_manifesto:'Manifesto',
+    prev:'Previous', next:'Next', all_series:'Whole series',
+    journal_title:'Journal', journal_sub:'Every publication, from the most recent to the very first.', journal_note:'Three publications a week',
+    manifesto_title:'Manifesto',
+    manifesto:[
+      `MONOTALES was born of a refusal: the refusal of speed.`,
+      `One photograph. One place. A few words. Nothing more. In a world flooded with images barely seen, we still believe in the single image — the one you look at, let settle, and never forget.`,
+      `Black and white is not nostalgia. It is a way of removing the superfluous to keep only light, form, and silence.`,
+      `Each series is a pause. Three times a week, then every day: a slow appointment, against the current.`,
+      `Here, you do not scroll. You stop.`
+    ],
+    footer_tag:'One photo. One place. One text.',
+    footer_rights:'© 2026 MONOTALES — Photographs in black and white. Français & English.'
+  }
+};
+
+// STATE
+let S = { screen:'home', cat:0, photo:0, lang:'fr' };
+
+function parseDate(s) { const p = s.split('.'); return new Date(+p[2],+p[1]-1,+p[0]).getTime(); }
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function pad(n) { return String(n).padStart(2,'0'); }
+
+function go(screen, cat, photo) {
+  S.screen = screen;
+  if (cat !== undefined) S.cat = cat;
+  if (photo !== undefined) S.photo = photo;
+  window.scrollTo({ top:0, behavior:'instant' });
+  render();
+}
+
+function stepPhoto(d) {
+  const n = CATS[S.cat].photos.length;
+  S.photo = (S.photo + d + n) % n;
+  window.scrollTo({ top:0, behavior:'instant' });
+  render();
+}
+
+// RENDER
+function render() {
+  const T = DICT[S.lang];
+  const { screen, lang, cat: ci, photo: pi } = S;
+  const galleryActive = screen==='home'||screen==='category'||screen==='tale';
+
+  // Header nav
+  const navItems = [
+    { label:T.nav_gallery, active:galleryActive, screen:'home' },
+    { label:T.nav_journal, active:screen==='journal', screen:'journal' },
+    { label:T.nav_manifesto, active:screen==='manifesto', screen:'manifesto' }
+  ];
+  document.getElementById('header-nav').innerHTML =
+    navItems.map((n,i) => `<div class="nav-item" data-nav-screen="${n.screen}" style="opacity:${n.active?1:0.5}">${esc(n.label)}</div>`).join('') +
+    `<div class="lang-switcher">
+      <span class="lang-btn" data-lang="fr" style="opacity:${lang==='fr'?1:0.42}">FR</span>
+      <span class="lang-sep">/</span>
+      <span class="lang-btn" data-lang="en" style="opacity:${lang==='en'?1:0.42}">EN</span>
+    </div>`;
+
+  // Footer
+  document.getElementById('footer-tagline').textContent = T.footer_tag;
+  document.getElementById('footer-rights').textContent = T.footer_rights;
+
+  // Main
+  const main = document.getElementById('main');
+  if (screen==='home') main.innerHTML = renderHome();
+  else if (screen==='category') main.innerHTML = renderCategory();
+  else if (screen==='tale') main.innerHTML = renderTale();
+  else if (screen==='manifesto') main.innerHTML = renderManifesto();
+  else if (screen==='journal') main.innerHTML = renderJournal();
+
+  attachEvents();
+  setupReveal();
+}
+
+function renderHome() {
+  const T = DICT[S.lang]; const lang = S.lang;
+  const cards = CATS.map((cat, i) =>
+    `<div class="gallery-card-wrap" data-action="cat" data-i="${i}">
+      <div class="gallery-card" style="aspect-ratio:${cat.ar};background-color:${cat.tone}">
+        <div class="card-inset"></div>
+        <div class="card-ph-label">Série · N&amp;B</div>
+        <div class="card-caption">
+          <div class="caption-place">${esc(cat.place[lang])}</div>
+          <div class="caption-title">${esc(cat.title[lang])}</div>
+          <div class="caption-count"><span class="caption-count-line"></span><span>${cat.photos.length} ${lang==='fr'?'photographies':'photographs'}</span></div>
+        </div>
+      </div>
+    </div>`
+  ).join('');
+  return `<section>
+    <div class="home-hero">
+      <div class="hero-kicker">${esc(T.kicker)}</div>
+      <h1 class="hero-title">${esc(T.hero1)}</h1>
+      <p class="hero-sub">${esc(T.heroSub)}</p>
+    </div>
+    <div class="gallery-grid">${cards}</div>
+  </section>`;
+}
+
+function renderCategory() {
+  const T = DICT[S.lang]; const lang = S.lang; const ci = S.cat; const cat = CATS[ci];
+  const cards = cat.photos.map((ph, pi) =>
+    `<div class="gallery-card-wrap" data-action="photo" data-ci="${ci}" data-pi="${pi}">
+      <div class="gallery-card gallery-card--photo" style="aspect-ratio:${ph.ar};background-color:${ph.tone};min-height:150px">
+        <div class="card-ph-center"><span>Photographie · N&amp;B</span></div>
+        <div class="card-caption card-caption--photo">
+          <div class="caption-photo-title">${esc(ph.title[lang])}</div>
+          <div class="caption-photo-meta"><span>${esc(ph.loc)}</span><span class="caption-meta-line"></span><span>${esc(ph.date)}</span></div>
+        </div>
+      </div>
+    </div>`
+  ).join('');
+  return `<section class="screen-enter">
+    <div class="cat-header">
+      <div class="breadcrumb">
+        <span class="breadcrumb-link" data-action="home">${esc(T.nav_gallery)}</span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-cur">${esc(cat.place[lang])}</span>
+      </div>
+      <h1 class="cat-title">${esc(cat.title[lang])}</h1>
+      <p class="cat-intro">${esc(cat.intro[lang])}</p>
+      <div class="cat-count">${cat.photos.length} ${lang==='fr'?'photographies':'photographs'}</div>
+    </div>
+    <div class="gallery-grid gallery-grid--narrow">${cards}</div>
+  </section>`;
+}
+
+function renderTale() {
+  const T = DICT[S.lang]; const lang = S.lang; const alt = lang==='fr'?'en':'fr';
+  const ci = S.cat; const pi = S.photo; const cat = CATS[ci]; const ph = cat.photos[pi];
+  return `<section class="tale-section screen-enter">
+    <div class="tale-breadcrumb">
+      <span class="breadcrumb-link" data-action="home">${esc(T.nav_gallery)}</span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-link" data-action="category">${esc(cat.title[lang])}</span>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-cur">${pad(pi+1)}</span>
+    </div>
+    <div class="tale-layout">
+      <div class="tale-image-col">
+        <div class="tale-image" style="aspect-ratio:${ph.ar};background-color:${ph.tone}">
+          <div class="tale-image-inset"><span class="tale-image-label">Photographie · N&amp;B</span></div>
+        </div>
+      </div>
+      <div class="tale-text-col">
+        <div class="tale-meta-top">
+          <span>${pad(pi+1)}</span><span class="tale-meta-line"></span><span>${esc(ph.date)}</span>
+        </div>
+        <div class="tale-loc">${esc(ph.loc)}</div>
+        <h2 class="tale-title">${esc(ph.title[lang])}</h2>
+        <p class="tale-text">${esc(ph.text[lang])}</p>
+        <div class="tale-alt">
+          <div class="tale-alt-label">${lang==='fr'?'English':'Français'}</div>
+          <p class="tale-alt-text">${esc(ph.text[alt])}</p>
+        </div>
+        <div class="tale-nav">
+          <div class="tale-nav-btn" data-action="prev">&larr;&nbsp;&nbsp;${esc(T.prev)}</div>
+          <div class="tale-nav-btn" data-action="category">${esc(T.all_series)}</div>
+          <div class="tale-nav-btn" data-action="next">${esc(T.next)}&nbsp;&nbsp;&rarr;</div>
+        </div>
+      </div>
+    </div>
+  </section>`;
+}
+
+function renderManifesto() {
+  const T = DICT[S.lang];
+  return `<section class="manifesto-section screen-enter">
+    <div class="manifesto-kicker">${esc(T.manifesto_title)}</div>
+    <p class="manifesto-lead">${esc(T.manifesto[0])}</p>
+    ${T.manifesto.slice(1).map(p=>`<p class="manifesto-para">${esc(p)}</p>`).join('')}
+    <div class="manifesto-rule"></div>
+  </section>`;
+}
+
+function renderJournal() {
+  const T = DICT[S.lang]; const lang = S.lang;
+  const flat = [];
+  CATS.forEach((cat, ci) => cat.photos.forEach((ph, pi) => flat.push({ci,pi,ph,cat})));
+  flat.sort((a,b) => parseDate(b.ph.date) - parseDate(a.ph.date));
+  const rows = flat.map((f,idx) =>
+    `<div class="journal-row" data-action="photo" data-ci="${f.ci}" data-pi="${f.pi}">
+      <div class="journal-row-meta"><span>${pad(idx+1)}</span><span>${esc(f.ph.date)}</span></div>
+      <div class="journal-row-body">
+        <div class="journal-row-top">
+          <span class="journal-row-title">${esc(f.ph.title[lang])}</span>
+          <span class="journal-row-loc">${esc(f.ph.loc)}</span>
+        </div>
+        <div class="journal-row-cat">${esc(f.cat.title[lang])}</div>
+        <p class="journal-row-excerpt">${esc(f.ph.text[lang])}</p>
+      </div>
+    </div>`
+  ).join('');
+  return `<section class="journal-section screen-enter">
+    <div class="journal-header">
+      <h2 class="journal-title">${esc(T.journal_title)}</h2>
+      <p class="journal-sub">${esc(T.journal_sub)}</p>
+      <div class="journal-note">${esc(T.journal_note)}</div>
+    </div>
+    <div class="journal-list">${rows}</div>
+  </section>`;
+}
+
+function attachEvents() {
+  // Header logo
+  document.getElementById('header-logo').onclick = () => go('home');
+  document.getElementById('footer-logo').onclick = () => go('home');
+
+  // Nav items
+  document.querySelectorAll('[data-nav-screen]').forEach(el =>
+    el.addEventListener('click', () => go(el.dataset.navScreen))
+  );
+
+  // Lang buttons
+  document.querySelectorAll('[data-lang]').forEach(el =>
+    el.addEventListener('click', () => { S.lang = el.dataset.lang; render(); })
+  );
+
+  // Main actions
+  document.querySelectorAll('[data-action]').forEach(el => {
+    el.addEventListener('click', e => {
+      const action = el.dataset.action;
+      if (action === 'cat') go('category', parseInt(el.dataset.i));
+      else if (action === 'photo') go('tale', parseInt(el.dataset.ci), parseInt(el.dataset.pi));
+      else if (action === 'home') go('home');
+      else if (action === 'category') go('category', S.cat);
+      else if (action === 'prev') stepPhoto(-1);
+      else if (action === 'next') stepPhoto(1);
+    });
+  });
+}
+
+// SCROLL REVEAL
+let observer = null;
+function setupReveal() {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.04 });
+  document.querySelectorAll('.gallery-card-wrap').forEach((el, i) => {
+    setTimeout(() => observer && observer.observe(el), i * 40);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
