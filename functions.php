@@ -1,6 +1,9 @@
 <?php
 defined('ABSPATH') || exit;
 
+/* ── Pipeline Make.com (REST API + webhook réseaux) ─ */
+require_once get_template_directory() . '/inc/pipeline.php';
+
 /* ── Theme setup ─────────────────────────────────── */
 add_action('after_setup_theme', function () {
     add_theme_support('title-tag');
