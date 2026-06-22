@@ -4,6 +4,12 @@ defined('ABSPATH') || exit;
 /* ── Pipeline Make.com (REST API + webhook réseaux) ─ */
 require_once get_template_directory() . '/inc/pipeline.php';
 
+/* ── SEO ─────────────────────────────────────────── */
+require_once get_template_directory() . '/inc/seo.php';
+
+/* ── RGPD ────────────────────────────────────────── */
+require_once get_template_directory() . '/inc/rgpd.php';
+
 /* ── Theme setup ─────────────────────────────────── */
 add_action('after_setup_theme', function () {
     add_theme_support('title-tag');
