@@ -13,6 +13,7 @@
       <a href="#" class="text-muted hover:text-paper transition-colors duration-300">Instagram</a>
       <a href="#" class="text-muted hover:text-paper transition-colors duration-300">Facebook</a>
       <a href="#" class="text-muted hover:text-paper transition-colors duration-300">Pinterest</a>
+      <a href="<?php echo esc_url(get_feed_link()); ?>" class="text-muted hover:text-paper transition-colors duration-300" title="Flux RSS">RSS</a>
     </div>
   </div>
   <p class="font-sans uppercase text-ash max-w-[1300px] mx-auto" style="font-size:10px;letter-spacing:0.16em;margin-top:clamp(30px,5vh,46px)">

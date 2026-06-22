@@ -186,8 +186,9 @@ add_action('admin_menu', function () {
     add_options_page('Monotales', 'Monotales', 'manage_options', 'monotales-settings', 'mt_settings_page');
 });
 add_action('admin_init', function () {
-    register_setting('monotales', 'mt_webhook_url',     ['sanitize_callback' => 'esc_url_raw']);
-    register_setting('monotales', 'mt_webhook_enabled', ['sanitize_callback' => 'sanitize_text_field']);
+    register_setting('monotales', 'mt_webhook_url',       ['sanitize_callback' => 'esc_url_raw']);
+    register_setting('monotales', 'mt_webhook_enabled',   ['sanitize_callback' => 'sanitize_text_field']);
+    register_setting('monotales', 'mt_plausible_domain',  ['sanitize_callback' => 'sanitize_text_field']);
 });
 
 function mt_settings_page(): void {
@@ -219,6 +220,30 @@ function mt_settings_page(): void {
                        <?php checked(get_option('mt_webhook_enabled'), '1'); ?>>
                 Envoyer aux réseaux sociaux lors de la publication d'un tale
               </label>
+            </td>
+          </tr>
+        </table>
+        <?php submit_button('Enregistrer'); ?>
+      </form>
+
+      <hr>
+      <h2>Analytics (Plausible)</h2>
+      <form method="post" action="options.php">
+        <?php settings_fields('monotales'); ?>
+        <table class="form-table">
+          <tr>
+            <th>Domaine Plausible</th>
+            <td>
+              <input type="text" name="mt_plausible_domain"
+                     value="<?php echo esc_attr(get_option('mt_plausible_domain')); ?>"
+                     class="regular-text"
+                     placeholder="monotales.com">
+              <p class="description">
+                Laisser vide pour désactiver. Créer un site sur
+                <a href="https://plausible.io" target="_blank">plausible.io</a>
+                et saisir le domaine exact (sans https://).
+                Aucun cookie, aucun consentement requis.
+              </p>
             </td>
           </tr>
         </table>

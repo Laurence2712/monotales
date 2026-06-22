@@ -271,4 +271,80 @@
     transition: color .3s ease;
   }
   .mt-cookie-link:hover { color: rgba(236,234,228,0.72); }
+
+  /* Lightbox */
+  #mt-lb {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background: rgba(10,10,10,0.97);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .35s ease, visibility .35s;
+  }
+  #mt-lb.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  body.mt-lb-open { overflow: hidden; }
+
+  .mt-lb-close {
+    position: absolute; top: 18px; right: 22px; z-index: 2;
+    background: none; border: none; cursor: pointer;
+    color: rgba(236,234,228,0.5); font-size: 30px; line-height: 1; padding: 4px;
+    transition: color .3s ease;
+  }
+  .mt-lb-close:hover { color: #ECEAE4; }
+
+  .mt-lb-prev, .mt-lb-next {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+    background: none; border: none; cursor: pointer;
+    color: rgba(236,234,228,0.36); font-size: 20px; padding: 22px 16px;
+    transition: color .3s ease;
+  }
+  .mt-lb-prev { left: 0; }
+  .mt-lb-next { right: 0; }
+  .mt-lb-prev:hover, .mt-lb-next:hover { color: rgba(236,234,228,0.82); }
+
+  .mt-lb-figure {
+    display: flex; flex-direction: column;
+    width: 100%; height: 100%; margin: 0; padding: 0;
+  }
+  .mt-lb-img {
+    display: block; flex: 1; min-height: 0;
+    width: 100%; object-fit: contain;
+    filter: grayscale(1);
+    padding: clamp(44px,7vh,80px) clamp(56px,8vw,120px) 0;
+  }
+  .mt-lb-cap {
+    flex-shrink: 0;
+    padding: clamp(14px,2vh,24px) clamp(20px,5vw,72px);
+    border-top: 1px solid rgba(236,234,228,0.1);
+  }
+  .mt-lb-meta {
+    @apply font-sans uppercase;
+    font-size: 10px; letter-spacing: 0.22em;
+    color: rgba(236,234,228,0.44); margin: 0 0 5px;
+  }
+  .mt-lb-title {
+    @apply font-display italic;
+    font-weight: 300; font-size: clamp(22px,3vw,40px);
+    line-height: 1.05; color: #ECEAE4; margin: 0 0 14px;
+  }
+  .mt-lb-foot { @apply flex items-center justify-between; gap: 16px; }
+  .mt-lb-read {
+    @apply font-sans uppercase;
+    font-size: 10px; letter-spacing: 0.22em;
+    color: rgba(236,234,228,0.54);
+    text-decoration: underline; text-underline-offset: 3px;
+    transition: color .3s ease;
+  }
+  .mt-lb-read:hover { color: #ECEAE4; }
+  .mt-lb-counter {
+    @apply font-sans;
+    font-size: 10px; letter-spacing: 0.16em;
+    color: rgba(236,234,228,0.3);
+  }
 }

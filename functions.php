@@ -35,7 +35,22 @@ add_action('wp_enqueue_scripts', function () {
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce'   => wp_create_nonce('monotales'),
     ]);
+
+    // Lightbox — pages série uniquement
+    if (is_singular('serie')) {
+        wp_enqueue_script('mt-lightbox', get_template_directory_uri() . '/js/lightbox.js', [], $ver, true);
+    }
 });
+
+/* ── Analytics (Plausible) ──────────────────────── */
+add_action('wp_head', function (): void {
+    $domain = get_option('mt_plausible_domain', '');
+    if (!$domain) return;
+    printf(
+        '<script defer data-domain="%s" src="https://plausible.io/js/script.js"></script>' . "\n",
+        esc_attr($domain)
+    );
+}, 5);
 
 /* ── Custom Post Types ───────────────────────────── */
 add_action('init', function () {

@@ -66,7 +66,9 @@ $num_label    = str_pad($current_num, 2, '0', STR_PAD_LEFT);
       <div class="mt-tale-image" style="aspect-ratio:<?php echo esc_attr($ar); ?>;background-color:<?php echo esc_attr($tone); ?>">
         <?php if ($img) : ?>
           <img src="<?php echo esc_url($img['sizes']['large'] ?? $img['url']); ?>"
+               <?php if (!empty($img['ID'])) echo 'srcset="' . esc_attr(wp_get_attachment_image_srcset($img['ID'], 'large') ?: '') . '" sizes="(max-width:768px) 100vw, 55vw"'; ?>
                alt="<?php echo esc_attr($img['alt'] ?: $title_fr); ?>"
+               loading="eager" decoding="async"
                class="absolute inset-0 w-full h-full object-cover grayscale">
         <?php else : ?>
           <div class="mt-tale-image-inset">
