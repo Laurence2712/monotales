@@ -24,8 +24,11 @@ add_action('after_setup_theme', function () {
 add_action('wp_enqueue_scripts', function () {
     $ver = wp_get_theme()->get('Version');
 
+    // Google Fonts
+    wp_enqueue_style('monotales-fonts', 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap', [], null);
+
     // Compiled Tailwind CSS
-    wp_enqueue_style('monotales-style', get_template_directory_uri() . '/dist/style.css', [], $ver);
+    wp_enqueue_style('monotales-style', get_template_directory_uri() . '/dist/style.css', ['monotales-fonts'], $ver);
 
     // Main JS
     wp_enqueue_script('monotales-main', get_template_directory_uri() . '/js/main.js', [], $ver, true);
@@ -158,9 +161,9 @@ function mt_get_tales(int $serie_id): WP_Query {
         'posts_per_page' => -1,
         'orderby'        => ['menu_order' => 'ASC', 'date' => 'DESC'],
         'meta_query'     => [[
-            'key'   => 'tale_serie',
-            'value' => '"' . $serie_id . '"',
-            'compare' => 'LIKE',
+            'key'     => 'tale_serie',
+            'value'   => $serie_id,
+            'compare' => '=',
         ]],
     ]);
 }
@@ -187,6 +190,64 @@ function mt_get_all_series(): WP_Query {
         'orderby'        => 'menu_order',
         'order'          => 'ASC',
     ]);
+}
+
+/* ── WooCommerce ─────────────────────────────────────── */
+add_action('after_setup_theme', function () {
+    add_theme_support('woocommerce', [
+        'thumbnail_image_width' => 800,
+        'single_image_width'    => 1200,
+    ]);
+}, 20);
+
+// Retirer les styles WooCommerce par défaut (on les remplace intégralement)
+add_filter('woocommerce_enqueue_styles', '__return_empty_array');
+
+// Flush rewrite rules une seule fois après activation WooCommerce
+add_action('init', function () {
+    if (function_exists('WC') && !get_transient('mt_wc_rewrite_flushed')) {
+        flush_rewrite_rules(false);
+        set_transient('mt_wc_rewrite_flushed', true, DAY_IN_SECONDS);
+    }
+}, 99);
+
+// Retirer breadcrumb WooCommerce et sidebar
+add_action('init', function () {
+    remove_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 20);
+    remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
+    remove_action('woocommerce_before_shop_loop', 'woocommerce_result_count', 20);
+    remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
+});
+
+// Rediriger la boutique vers la home si désactivée
+add_action('template_redirect', function () {
+    if (defined('MT_BOUTIQUE_ACTIVE') && MT_BOUTIQUE_ACTIVE) return;
+    if (is_woocommerce() || is_cart() || is_checkout() || is_account_page()) {
+        wp_safe_redirect(home_url('/'), 302);
+        exit;
+    }
+});
+
+// Message "ajouté au panier" bilingue
+add_filter('woocommerce_add_to_cart_message_html', function (string $_msg, array $_products): string {
+    $url = function_exists('wc_get_cart_url') ? wc_get_cart_url() : home_url('/cart/');
+    return sprintf(
+        '<span class="mt-fr">Ajouté au panier.</span><span class="mt-en">Added to cart.</span>'
+        . ' <a href="%s" class="wc-forward button">'
+        . '<span class="mt-fr">Voir le panier</span><span class="mt-en">View cart</span>'
+        . '</a>',
+        esc_url($url)
+    );
+}, 10, 2);
+
+/**
+ * Récupère l'image ACF du Tale lié à un produit WooCommerce.
+ */
+function mt_wc_product_image(int $product_id): array|false {
+    $tale_id = get_field('product_tale', $product_id);
+    if (!$tale_id) return false;
+    $img = get_field('tale_image', (int) $tale_id);
+    return is_array($img) ? $img : false;
 }
 
 /* ── Boutique helpers (infrastructure — non publique) ── */

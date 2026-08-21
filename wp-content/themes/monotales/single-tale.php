@@ -59,10 +59,10 @@ $num_label    = str_pad($current_num, 2, '0', STR_PAD_LEFT);
   </div>
 
   <!-- Layout image + texte -->
-  <div class="flex flex-wrap items-start" style="gap:clamp(28px,4.5vw,72px);margin-top:clamp(22px,3vh,38px)">
+  <div class="mt-tale-layout">
 
     <!-- Image -->
-    <div class="flex-1 min-w-[280px]" style="flex-basis:460px">
+    <div class="mt-tale-image-col">
       <div class="mt-tale-image" style="aspect-ratio:<?php echo esc_attr($ar); ?>;background-color:<?php echo esc_attr($tone); ?>">
         <?php if ($img) : ?>
           <img src="<?php echo esc_url($img['sizes']['large'] ?? $img['url']); ?>"
@@ -82,7 +82,7 @@ $num_label    = str_pad($current_num, 2, '0', STR_PAD_LEFT);
     </div>
 
     <!-- Texte -->
-    <div class="flex-1 min-w-[280px] pt-1" style="flex-basis:380px">
+    <div class="mt-tale-text-col">
 
       <div class="flex items-center gap-3.5 font-sans uppercase text-dim" style="font-size:10.5px;letter-spacing:0.22em">
         <span><?php echo esc_html($num_label); ?></span>

@@ -161,9 +161,15 @@ add_action('transition_post_status', function (string $new, string $old, WP_Post
     $img      = get_field('tale_image', $id);
     $serie_id = (int) get_field('tale_serie', $id);
 
+    $ig_caption_fr  = get_field('tale_ig_caption_fr', $id) ?: '';
+    $ig_caption_en  = get_field('tale_ig_caption_en', $id) ?: '';
+    $ig_hashtags_fr = get_field('tale_ig_hashtags_fr', $id) ?: '';
+    $ig_hashtags_en = get_field('tale_ig_hashtags_en', $id) ?: '';
+
     wp_remote_post($url, [
         'headers'  => ['Content-Type' => 'application/json'],
         'body'     => wp_json_encode([
+            // Métadonnées
             'tale_id'   => $id,
             'permalink' => get_permalink($id),
             'title_fr'  => get_field('tale_title_fr', $id) ?: $post->post_title,
@@ -172,9 +178,23 @@ add_action('transition_post_status', function (string $new, string $old, WP_Post
             'text_en'   => wp_strip_all_tags(get_field('tale_text_en', $id) ?: ''),
             'location'  => get_field('tale_location', $id) ?: '',
             'date'      => get_field('tale_date', $id) ?: '',
-            'image_url' => $img ? ($img['sizes']['large'] ?? $img['url']) : '',
             'serie_fr'  => $serie_id ? (get_field('serie_title_fr', $serie_id) ?: '') : '',
             'serie_en'  => $serie_id ? (get_field('serie_title_en', $serie_id) ?: '') : '',
+            // Image
+            'image_url'      => $img ? ($img['sizes']['large'] ?? $img['url']) : '',
+            'image_url_full' => $img ? $img['url'] : '',
+            // Instagram
+            'ig_caption_fr'  => $ig_caption_fr ? $ig_caption_fr . ($ig_hashtags_fr ? "\n\n" . $ig_hashtags_fr : '') : '',
+            'ig_caption_en'  => $ig_caption_en ? $ig_caption_en . ($ig_hashtags_en ? "\n\n" . $ig_hashtags_en : '') : '',
+            // Facebook
+            'fb_caption_fr'  => get_field('tale_fb_caption_fr', $id) ?: '',
+            'fb_caption_en'  => get_field('tale_fb_caption_en', $id) ?: '',
+            // Pinterest
+            'pin_title_fr'   => get_field('tale_pin_title_fr', $id) ?: (get_field('tale_title_fr', $id) ?: ''),
+            'pin_title_en'   => get_field('tale_pin_title_en', $id) ?: (get_field('tale_title_en', $id) ?: ''),
+            'pin_desc_fr'    => get_field('tale_pin_desc_fr', $id) ?: '',
+            'pin_desc_en'    => get_field('tale_pin_desc_en', $id) ?: '',
+            'pin_board'      => get_field('tale_pin_board', $id) ?: '',
         ]),
         'timeout'  => 10,
         'blocking' => false,
@@ -281,17 +301,80 @@ function mt_settings_page(): void {
       <code style="display:block;padding:10px;background:#f0f0f0;margin:8px 0">GET <?php echo esc_url($endpoint_series); ?></code>
 
       <hr>
-      <h2>3. Scénario Make.com — étapes</h2>
-      <ol style="line-height:2">
-        <li><strong>Google Drive → Watch Files</strong> : surveille le dossier <em>Monotales/À publier</em></li>
-        <li><strong>Google Drive → Download File</strong> : récupère l'image (.jpg)</li>
-        <li><strong>Google Docs → Get a Document</strong> : lit le Google Doc</li>
-        <li><strong>Text Parser</strong> : extrait les champs (TITRE FR:, LIEU:, etc.)</li>
-        <li><strong>WordPress → Upload Media</strong> (ou HTTP POST vers <code>/wp/v2/media</code>) : upload l'image</li>
-        <li><strong>HTTP → Make a request</strong> : POST vers <code>/monotales/v1/publish</code> avec le JSON</li>
-        <li><strong>Router → Instagram / Facebook / Pinterest</strong></li>
-        <li><strong>Google Drive → Move File</strong> : déplace le doc vers <em>Monotales/Publié</em></li>
+      <h2>3. Structure Google Drive</h2>
+      <pre style="background:#f0f0f0;padding:12px;border-radius:4px">Monotales/
+├── À publier/
+│   ├── 2026-07-15_bedroom-2.jpg       ← image haute résolution
+│   └── 2026-07-15_bedroom-2.gdoc      ← Google Doc avec les métadonnées
+└── Publié/                             ← Make.com déplace ici après publication</pre>
+
+      <h3>Template Google Doc</h3>
+      <pre style="background:#f0f0f0;padding:12px;border-radius:4px;overflow-x:auto"><?php echo esc_html(
+'TITRE FR: bedroom 2
+TITRE EN: bedroom 2
+SÉRIE: Habitat
+LIEU: Bruxelles, Belgique
+DATE: 15.07.2026
+
+--- TEXTE FR ---
+Le texte principal de la photo (affiché sur le site)...
+
+--- TEXTE EN ---
+The main text of the photograph (displayed on the site)...
+
+--- INSTAGRAM FR ---
+Caption Instagram en français.
+(texte court, percutant, max ~150 mots)
+
+#photographie #noiretblanc #argentique #monotales
+
+--- INSTAGRAM EN ---
+Instagram caption in English.
+
+#photography #blackandwhite #filmphotography #monotales
+
+--- FACEBOOK FR ---
+Texte Facebook, peut être plus long, plus narratif.
+
+--- PINTEREST FR ---
+TITRE PIN: bedroom 2 — tirage Fine Art N&B
+BOARD: Black & White Photography
+Description: Photographie de chambre en noir et blanc...'); ?></pre>
+
+      <h2>4. Scénario Make.com — étapes complètes</h2>
+      <ol style="line-height:2.2">
+        <li><strong>Google Drive → Watch Files</strong> : surveille <em>Monotales/À publier/</em>, filtre <code>.gdoc</code></li>
+        <li><strong>Google Docs → Get a Document</strong> : récupère le contenu du doc</li>
+        <li><strong>Text Parser → Parse text</strong> : extrait chaque section (TITRE FR:, --- INSTAGRAM FR ---, etc.)</li>
+        <li><strong>Google Drive → Search Files</strong> : trouve le .jpg du même nom</li>
+        <li><strong>Google Drive → Download File</strong> : télécharge l'image</li>
+        <li><strong>HTTP → Upload vers WordPress</strong> : <code>POST /wp/v2/media</code> (Basic Auth)</li>
+        <li><strong>HTTP → Créer le tale</strong> : <code>POST /monotales/v1/publish</code> avec le JSON complet</li>
+        <li><strong>Router</strong> : 3 branches en parallèle ↓</li>
+        <li style="margin-left:20px"><strong>Meta for Instagram → Create a Photo</strong> : image + <code>ig_caption_fr</code></li>
+        <li style="margin-left:20px"><strong>Facebook Pages → Create a Post</strong> : image + <code>fb_caption_fr</code> + lien permalink</li>
+        <li style="margin-left:20px"><strong>Pinterest → Create a Pin</strong> : image + <code>pin_title_fr</code> + <code>pin_desc_fr</code> + board + permalink</li>
+        <li><strong>Google Drive → Move File</strong> : déplace .jpg et .gdoc vers <em>Monotales/Publié/</em></li>
       </ol>
+
+      <h2>5. Tokens et connexions à configurer dans Make.com</h2>
+      <table class="form-table">
+        <tr><th>Instagram</th><td>Meta for Business → Instagram Graph API. Nécessite un compte Instagram <strong>Business ou Creator</strong> lié à une Page Facebook.<br>
+        Dans Make.com : module "Meta for Instagram" → connecter votre compte Meta.</td></tr>
+        <tr><th>Facebook</th><td>Module "Facebook Pages" dans Make.com → autoriser la Page Monotales.</td></tr>
+        <tr><th>Pinterest</th><td>Module "Pinterest" dans Make.com → connecter le compte Pinterest.<br>
+        L'image doit être une URL publique (utiliser l'URL WordPress après upload).</td></tr>
+      </table>
+
+      <h2>6. Roadmap réseaux — phase 2</h2>
+      <table class="form-table" style="opacity:0.7">
+        <tr><th>Bluesky</th><td>AT Protocol, API gratuite et ouverte. Module HTTP → <code>api.bsky.app</code>. Simple à ajouter.</td></tr>
+        <tr><th>X / Twitter</th><td>API v2, plan Basic requis (100 $/mois ou accès gratuit limité). Module "Twitter" dans Make.</td></tr>
+        <tr><th>LinkedIn</th><td>LinkedIn Pages API. Module "LinkedIn" dans Make.com.</td></tr>
+        <tr><th>Flickr / 500px</th><td>APIs disponibles. Module HTTP + clé API.</td></tr>
+        <tr><th>Substack</th><td>Pas d'API de publication. Approche : Make envoie un draft par email à votre adresse Substack.</td></tr>
+        <tr><th>TikTok</th><td>Nécessite du contenu vidéo. Hors scope photo fixe — à reconsidérer si Reels/Shorts.</td></tr>
+      </table>
     </div>
     <?php
 }

@@ -1,0 +1,27 @@
+{
+  "key": "group_article",
+  "title": "Article",
+  "fields": [
+    {
+      "key": "field_article_tales",
+      "label": "Photos liées",
+      "name": "article_tales",
+      "type": "relationship",
+      "instructions": "Sélectionne les tales (photos) à afficher sous l'article.",
+      "post_type": ["tale"],
+      "filters": ["search"],
+      "return_format": "object",
+      "min": 0,
+      "max": 0,
+      "wrapper": {"width": "", "class": "", "id": ""}
+    }
+  ],
+  "location": [[{"param": "post_type", "operator": "==", "value": "post"}]],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "seamless",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "active": true,
+  "description": ""
+}

@@ -8,16 +8,27 @@ $ar         = get_field('serie_aspect_ratio', $post_id) ?: '3/4';
 $tone       = get_field('serie_tone', $post_id)        ?: '#f4f3ef';
 $tales_q    = mt_get_tales($post_id);
 $count      = $tales_q->found_posts;
-wp_reset_postdata();
 ?>
 <div class="mt-card-wrap" data-reveal>
   <a href="<?php the_permalink(); ?>" class="block">
     <div class="mt-card" style="aspect-ratio:<?php echo esc_attr($ar); ?>;background-color:<?php echo esc_attr($tone); ?>">
-      <div class="mt-card-inset"></div>
-      <div class="mt-card-ph-corner">
-        <span class="mt-fr">Série · N&B</span>
-        <span class="mt-en">Series · B&W</span>
-      </div>
+      <?php if (has_post_thumbnail($post_id)) : ?>
+        <?php echo get_the_post_thumbnail($post_id, 'large', [
+          'class'   => 'absolute inset-0 w-full h-full object-cover grayscale',
+          'loading' => 'lazy',
+          'decoding'=> 'async',
+        ]); ?>
+        <div class="mt-card-ph-corner" style="color:rgba(236,234,228,0.55)">
+          <span class="mt-fr">Série · N&B</span>
+          <span class="mt-en">Series · B&W</span>
+        </div>
+      <?php else : ?>
+        <div class="mt-card-inset"></div>
+        <div class="mt-card-ph-corner">
+          <span class="mt-fr">Série · N&B</span>
+          <span class="mt-en">Series · B&W</span>
+        </div>
+      <?php endif; ?>
       <div class="mt-card-caption">
         <div class="mt-caption-place">
           <span class="mt-fr"><?php echo esc_html($place_fr); ?></span>
@@ -31,8 +42,8 @@ wp_reset_postdata();
           <span class="mt-caption-line"></span>
           <span>
             <?php echo $count; ?>
-            <span class="mt-fr"> photographies</span>
-            <span class="mt-en"> photographs</span>
+            <span class="mt-fr"><?php echo $count > 1 ? ' photographies' : ' photographie'; ?></span>
+            <span class="mt-en"><?php echo $count > 1 ? ' photographs' : ' photograph'; ?></span>
           </span>
         </div>
       </div>

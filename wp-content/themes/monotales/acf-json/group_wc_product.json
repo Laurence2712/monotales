@@ -1,0 +1,122 @@
+{
+  "key": "group_wc_product",
+  "title": "Boutique — Produit",
+  "fields": [
+    {
+      "key": "field_product_tale",
+      "label": "Tale lié (photo source)",
+      "name": "product_tale",
+      "type": "post_object",
+      "instructions": "La photo vendue en tirage.",
+      "required": 1,
+      "post_type": ["tale"],
+      "taxonomy": "",
+      "allow_null": 0,
+      "multiple": 0,
+      "return_format": "id",
+      "ui": 1,
+      "wrapper": { "width": "", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_title_fr",
+      "label": "Titre produit (FR)",
+      "name": "product_title_fr",
+      "type": "text",
+      "instructions": "Laisser vide pour utiliser le titre du tale.",
+      "required": 0,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_title_en",
+      "label": "Product title (EN)",
+      "name": "product_title_en",
+      "type": "text",
+      "instructions": "Leave empty to use the tale title.",
+      "required": 0,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_desc_fr",
+      "label": "Description (FR)",
+      "name": "product_desc_fr",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "rows": 3,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_desc_en",
+      "label": "Description (EN)",
+      "name": "product_desc_en",
+      "type": "textarea",
+      "instructions": "",
+      "required": 0,
+      "rows": 3,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_edition_type",
+      "label": "Type d'édition",
+      "name": "product_edition_type",
+      "type": "select",
+      "instructions": "",
+      "required": 0,
+      "choices": {
+        "unique":  "Œuvre unique",
+        "limitee": "Édition limitée",
+        "open":    "Édition ouverte"
+      },
+      "default_value": "unique",
+      "allow_null": 0,
+      "multiple": 0,
+      "ui": 1,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_edition_count",
+      "label": "Nombre d'exemplaires (édition limitée / unique)",
+      "name": "product_edition_count",
+      "type": "number",
+      "instructions": "Ex : 30 pour une édition à 30 exemplaires.",
+      "required": 0,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_paper_fr",
+      "label": "Papier / Support (FR)",
+      "name": "product_paper_fr",
+      "type": "text",
+      "instructions": "Ex : Impression jet d'encre sur papier Hahnemühle 300 g/m²",
+      "required": 0,
+      "placeholder": "Impression jet d'encre sur papier Hahnemühle 300 g/m²",
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_product_paper_en",
+      "label": "Paper / Medium (EN)",
+      "name": "product_paper_en",
+      "type": "text",
+      "instructions": "",
+      "required": 0,
+      "placeholder": "Inkjet print on Hahnemühle 300 g/m² paper",
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "product"
+      }
+    ]
+  ],
+  "menu_order": 0,
+  "position": "normal",
+  "style": "default",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "active": true,
+  "description": ""
+}

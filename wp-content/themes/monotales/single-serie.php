@@ -42,8 +42,8 @@ $count    = $tales_q->found_posts;
 
     <p class="font-sans uppercase text-faint mt-6" style="font-size:10px;letter-spacing:0.26em">
       <?php echo $count; ?>
-      <span class="mt-fr"> photographies</span>
-      <span class="mt-en"> photographs</span>
+      <span class="mt-fr"><?php echo $count > 1 ? ' photographies' : ' photographie'; ?></span>
+      <span class="mt-en"><?php echo $count > 1 ? ' photographs' : ' photograph'; ?></span>
     </p>
 
   </div>

@@ -7,7 +7,6 @@ $place_en = get_field('serie_place_en', $post_id) ?: '';
 $tone     = get_field('serie_tone', $post_id)     ?: '#f4f3ef';
 $tales_q  = mt_get_tales($post_id);
 $count    = $tales_q->found_posts;
-wp_reset_postdata();
 ?>
 <div class="mt-card-wrap" data-reveal>
   <a href="<?php the_permalink(); ?>" class="block">
@@ -31,8 +30,8 @@ wp_reset_postdata();
           <span class="mt-caption-featured-line"></span>
           <span>
             <?php echo $count; ?>
-            <span class="mt-fr"> photographies</span>
-            <span class="mt-en"> photographs</span>
+            <span class="mt-fr"><?php echo $count > 1 ? ' photographies' : ' photographie'; ?></span>
+            <span class="mt-en"><?php echo $count > 1 ? ' photographs' : ' photograph'; ?></span>
           </span>
         </div>
       </div>

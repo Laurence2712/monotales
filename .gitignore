@@ -1,3 +1,42 @@
-*.bundle
-dist/
+# Node
 node_modules/
+*.bundle
+
+# WordPress core — ne pas versionner
+wp-admin/
+wp-includes/
+wp-activate.php
+wp-blog-header.php
+wp-comments-post.php
+wp-config-sample.php
+wp-cron.php
+wp-links-opml.php
+wp-load.php
+wp-login.php
+wp-mail.php
+wp-settings.php
+wp-signup.php
+wp-trackback.php
+xmlrpc.php
+license.txt
+readme.html
+
+# Fichiers sensibles
+wp-config.php
+.htaccess
+
+# OS
+.DS_Store
+
+# WordPress uploads / cache
+wp-content/uploads/
+wp-content/upgrade/
+wp-content/cache/
+
+# Autres plugins et thèmes (on ne versionne que le thème monotales)
+wp-content/plugins/
+wp-content/themes/twentytwenty*/
+wp-content/themes/index.php
+wp-content/index.php
+wp-content/jetpack-waf/
+wp-content/languages/

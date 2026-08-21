@@ -21,9 +21,9 @@ module.exports = {
         low:    '#928e85',
       },
       fontFamily: {
-        display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-        body:    ['"EB Garamond"', 'Georgia', 'serif'],
-        sans:    ['"Helvetica Neue"', 'Arial', 'sans-serif'],
+        display: ['"Cormorant Garamond"', 'Garamond', 'Georgia', 'serif'],
+        body:    ['"EB Garamond"', 'Garamond', 'Georgia', 'serif'],
+        sans:    ['"EB Garamond"', 'Garamond', 'Georgia', 'serif'],
       },
       keyframes: {
         fade: {

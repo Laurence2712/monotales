@@ -1,0 +1,143 @@
+{
+  "key": "group_tale_social",
+  "title": "Réseaux sociaux",
+  "fields": [
+    {
+      "key": "field_social_tab_ig",
+      "label": "Instagram",
+      "name": "",
+      "type": "tab",
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_tale_ig_caption_fr",
+      "label": "Caption Instagram (FR)",
+      "name": "tale_ig_caption_fr",
+      "type": "textarea",
+      "instructions": "Max 2 200 caractères. Les hashtags vont en bas, séparés du texte par une ligne vide.",
+      "rows": 5,
+      "maxlength": 2200,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_ig_caption_en",
+      "label": "Caption Instagram (EN)",
+      "name": "tale_ig_caption_en",
+      "type": "textarea",
+      "instructions": "Max 2 200 characters.",
+      "rows": 5,
+      "maxlength": 2200,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_ig_hashtags_fr",
+      "label": "Hashtags FR",
+      "name": "tale_ig_hashtags_fr",
+      "type": "text",
+      "instructions": "Ex : #photographie #argentique #noiretblanc — max 30 hashtags",
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_ig_hashtags_en",
+      "label": "Hashtags EN",
+      "name": "tale_ig_hashtags_en",
+      "type": "text",
+      "instructions": "Ex : #photography #blackandwhite #filmphotography — max 30 hashtags",
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_social_tab_fb",
+      "label": "Facebook",
+      "name": "",
+      "type": "tab",
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_tale_fb_caption_fr",
+      "label": "Texte Facebook (FR)",
+      "name": "tale_fb_caption_fr",
+      "type": "textarea",
+      "instructions": "Texte de la publication. Légèrement plus long qu'Instagram — contexte, histoire.",
+      "rows": 5,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_fb_caption_en",
+      "label": "Texte Facebook (EN)",
+      "name": "tale_fb_caption_en",
+      "type": "textarea",
+      "rows": 5,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_social_tab_pinterest",
+      "label": "Pinterest",
+      "name": "",
+      "type": "tab",
+      "placement": "top",
+      "endpoint": 0
+    },
+    {
+      "key": "field_tale_pin_title_fr",
+      "label": "Titre du pin (FR)",
+      "name": "tale_pin_title_fr",
+      "type": "text",
+      "instructions": "Max 100 caractères.",
+      "maxlength": 100,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_pin_title_en",
+      "label": "Pin title (EN)",
+      "name": "tale_pin_title_en",
+      "type": "text",
+      "maxlength": 100,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_pin_desc_fr",
+      "label": "Description du pin (FR)",
+      "name": "tale_pin_desc_fr",
+      "type": "textarea",
+      "instructions": "Max 500 caractères. Décrit l'image, inclut des mots-clés.",
+      "rows": 4,
+      "maxlength": 500,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_pin_desc_en",
+      "label": "Pin description (EN)",
+      "name": "tale_pin_desc_en",
+      "type": "textarea",
+      "rows": 4,
+      "maxlength": 500,
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    },
+    {
+      "key": "field_tale_pin_board",
+      "label": "Board Pinterest",
+      "name": "tale_pin_board",
+      "type": "text",
+      "instructions": "Nom exact du board Pinterest cible (ex : Black & White Photography)",
+      "wrapper": { "width": "50", "class": "", "id": "" }
+    }
+  ],
+  "location": [
+    [
+      {
+        "param": "post_type",
+        "operator": "==",
+        "value": "tale"
+      }
+    ]
+  ],
+  "menu_order": 10,
+  "position": "normal",
+  "style": "seamless",
+  "label_placement": "top",
+  "instruction_placement": "label",
+  "active": true,
+  "description": ""
+}

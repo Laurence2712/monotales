@@ -6,14 +6,27 @@ defined('ABSPATH') || exit;
    Open Graph · Twitter Card · Schema.org · hreflang
    ══════════════════════════════════════════════════════ */
 
+// Titre <title> : "Nom page — MONOTALES"
+add_filter('document_title_parts', function(array $parts): array {
+    $parts['tagline'] = '';
+    if (is_singular('tale')) {
+        $parts['title'] = get_field('tale_title_fr', get_the_ID()) ?: get_the_title();
+    } elseif (is_singular('serie')) {
+        $parts['title'] = get_field('serie_title_fr', get_the_ID()) ?: get_the_title();
+    }
+    return $parts;
+});
+add_filter('document_title_separator', fn() => '—');
+
 add_action('wp_head', 'mt_seo_head', 1);
 
 function mt_seo_head(): void {
-    if (is_singular('tale'))                    mt_seo_tale();
-    elseif (is_singular('serie'))               mt_seo_serie();
-    elseif (is_front_page())                    mt_seo_home();
-    elseif (is_page_template('page-manifesto.php')) mt_seo_manifesto();
-    else                                        mt_seo_default();
+    if (is_singular('tale'))                         mt_seo_tale();
+    elseif (is_singular('serie'))                    mt_seo_serie();
+    elseif (is_front_page())                         mt_seo_home();
+    elseif (is_page_template('page-manifesto.php'))  mt_seo_manifesto();
+    elseif (is_page_template('page-journal.php'))    mt_seo_journal();
+    else                                             mt_seo_default();
 
     // hreflang — même URL sert FR et EN
     $url = get_permalink() ?: home_url('/');
@@ -77,8 +90,9 @@ function mt_seo_serie(): void {
     $desc  = trim(($place ? "{$place} — " : '') . mb_substr($intro, 0, 150))
            ?: "Série photographique en noir et blanc — {$tfr}";
 
+    $img_url = get_the_post_thumbnail_url($id, 'large') ?: mt_og_fallback();
     mt_og(['title' => "{$tfr} — MONOTALES", 'desc' => $desc,
-           'url' => get_permalink($id), 'image' => mt_og_fallback(), 'type' => 'article']);
+           'url' => get_permalink($id), 'image' => $img_url, 'type' => 'article']);
     printf('<meta name="description" content="%s">' . "\n", esc_attr($desc));
     mt_schema(array_filter([
         '@context'        => 'https://schema.org',
@@ -106,6 +120,17 @@ function mt_seo_manifesto(): void {
     mt_og(['title' => 'Manifeste — MONOTALES', 'desc' => $desc,
            'url' => get_permalink(), 'image' => mt_og_fallback(), 'type' => 'article']);
     printf('<meta name="description" content="%s">' . "\n", esc_attr($desc));
+}
+
+function mt_seo_journal(): void {
+    $desc = 'Toutes les parutions MONOTALES — une photo, un lieu, un texte, de la plus récente à la première.';
+    mt_og(['title' => 'Journal — MONOTALES', 'desc' => $desc,
+           'url' => get_permalink(), 'image' => mt_og_fallback(), 'type' => 'website']);
+    printf('<meta name="description" content="%s">' . "\n", esc_attr($desc));
+    mt_schema(['@context' => 'https://schema.org', '@type' => 'Blog',
+               'name' => 'Journal — MONOTALES', 'description' => $desc,
+               'url' => get_permalink(), 'inLanguage' => ['fr', 'en'],
+               'author' => ['@type' => 'Person', 'name' => 'MONOTALES']]);
 }
 
 function mt_seo_default(): void {
@@ -144,11 +169,16 @@ function mt_schema(array $data): void {
 }
 
 function mt_og_fallback(): string {
-    // Première image média uploadée, sinon vide
+    static $cache = null;
+    if ($cache !== null) return $cache;
+    // Image OG par défaut : option WordPress ou première photo uploadée
+    $custom = get_option('mt_og_default_image', '');
+    if ($custom) { $cache = $custom; return $cache; }
     $q = new WP_Query(['post_type' => 'attachment', 'post_mime_type' => 'image/jpeg',
                        'posts_per_page' => 1, 'orderby' => 'date', 'order' => 'ASC']);
-    if ($q->have_posts()) { $q->the_post(); $url = wp_get_attachment_url(get_the_ID()); wp_reset_postdata(); return $url ?: ''; }
-    return '';
+    $cache = '';
+    if ($q->have_posts()) { $q->the_post(); $cache = wp_get_attachment_url(get_the_ID()) ?: ''; wp_reset_postdata(); }
+    return $cache;
 }
 
 function mt_date_iso(string $d): string {
